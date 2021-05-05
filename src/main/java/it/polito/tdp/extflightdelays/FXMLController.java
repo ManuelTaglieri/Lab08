@@ -7,6 +7,8 @@ package it.polito.tdp.extflightdelays;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +37,33 @@ public class FXMLController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
-    	//TODO
+    	
+    	txtResult.clear();
+    	
+    	if (distanzaMinima.getText()==null || distanzaMinima.getText().equals("")) {
+    		txtResult.setText("Inserire un valore di distanza minima.");
+    	} else {
+    		try {
+    			
+    			double distanzaMin = Double.parseDouble(distanzaMinima.getText());
+    			
+    			this.model.creaGrafo(distanzaMin);
+    			
+    			txtResult.appendText("Numero di aeroporti: "+this.model.getVertici()+"\n");
+    			txtResult.appendText("Numero di rotte: "+this.model.getArchi()+"\n");
+    			
+    			txtResult.appendText("Elenco rotte:\n");
+    			for (DefaultWeightedEdge r : this.model.getGrafo().edgeSet()) {
+    				txtResult.appendText(r.toString()+"; Distanza media: "+this.model.getGrafo().getEdgeWeight(r)+"\n");
+    			}
+    			
+    			
+    		} catch (NumberFormatException e) {
+    			txtResult.setText("Inserire solo numeri nel campo distanza minima.");
+    			return;
+    		}
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
